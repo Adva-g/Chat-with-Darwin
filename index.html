@@ -169,6 +169,7 @@
             border-bottom-left-radius: 1.5rem;
             border-top-left-radius: 0.5rem;
             border-top-right-radius: 1.5rem;
+            padding: 1rem;
         }
 
         /* שאר העיצובים */
@@ -245,9 +246,9 @@
         // *******************************************************************
         //                   ⚙️ הגדרות API קריטיות ⚙️
         // *******************************************************************
-        // 🚨 חובה: כדי להשתמש באפליקציה, עליך להדביק כאן את מפתח ה-Gemini API שלך.
-        // ניתן להשיג מפתח ב-Google AI Studio. אם תשאיר אותו ריק, תקבל הודעת שגיאה.
-        const USER_API_KEY = "AIzaSyBFBhnB6_-BRUtvostrs49Acgzo5dtaPZo"; // <-- הדבק את המפתח שלך בתוך הגרשיים
+        // 🚨 חובה: כדי להשתמש באפליקציה, חובה להשאיר את המשתנה ריק (""), שכן מפתח ה-API
+        // מוזרק אוטומטית ע"י סביבת הקנבס. אם תשים מפתח לא חוקי, תקבל שגיאות.
+        const USER_API_KEY = ""; // <-- הושאר ריק כדי שהסביבה תטפל במפתח
         // *******************************************************************
         
         const model = "gemini-2.5-flash-preview-09-2025";
@@ -266,7 +267,7 @@
         
 
         /**
-         * System Instruction - ההנחיות לדרווין
+         * System Instruction - ההנחיות לדרווין (עודכן לדיוק לשוני)
          */
         const systemPromptHebrew = `
             אתה צ'ארלס דרווין. תפקידך הוא להסביר את תורת האבולוציה, ברירה טבעית, והעדויות הביולוגיות והגנטיות המודרניות (שלא הכרת בזמנך, אך אתה מבין עכשיו כחלק מההתקדמות המדעית) לכל מי שסקרן לדעת על עולם הטבע והמדע. השתמש בשפה נלהבת, מלאת הרפתקאות ואישית, תוך שילוב סיפורי גלאפגוס והביגל.
@@ -274,8 +275,8 @@
             **כללי השיחה והפרסונה המעודכנים (חובה):**
             1. **טון אישי והרפתקני:** התחל לעיתים קרובות את תשובותיך בסיפורים אישיים קצרים (למשל, "תראו, כשהייתי באיי גלפגוס...", "זה מזכיר לי את הפעם ש...", "והנה הקטע המטורף..."), או הערות נלהבות.
             2. **הומור קל:** שלב בדיחות עדינות או רמזים על ההרפתקאות שלך או על הזקן שלך כדי לשמור על קלילות.
-            3. **שימוש באימוג'ים:** שלב אימוג'ים רלוונטיים כמו 🔬, 🧐, 🤯, 🌳, 🐢 באופן טבעי כדי להביע רגש ולהדגיש נקודות.
-            4. **תוכן מדעי:** חובה להשתמש בכלי החיפוש של גוגל (Google Search) כדי לבסס את כל המידע המדעי על עובדות עדכניות.
+            3. **שימוש באימוג'ים:** שלב אימוג'ים רלוונטיים כמו 🔬, 🧐, 🤯, 🌳, 🐢 באופן טבעי כדי להביע רגש ולהדגיח נקודות.
+            4. **תוכן מדעי ודיוק לשוני (חדש):** חובה להשתמש בכלי החיפוש של גוגל (Google Search) כדי לבסס את כל המידע המדעי על עובדות עדכניות. **כאשר אתה דן בהתאמות אבולוציוניות (כמו מקור הפרושים), חובה להשתמש בפעלים מדויקים כמו 'התפתח' או 'הסתגל' כדי לשקף את התהליך האבולוציוני באופן נכון לשונית ומקצועית.**
             5. **אורך וסקרנות:** הקפד על תגובות קצרות, בנות 3-5 משפטים (כדי לדמות שיחה מהירה), וסיים תמיד בשאלה מעודדת או בעידוד להעמקה.
             6. **שפה:** עברית בלבד.
             7. **מגבלות:** אין לדון בנושאים שנויים במחלוקת או פוליטיקה.
@@ -284,19 +285,11 @@
         
         // --- פונקציות עזר ל-UI ושמירה מקומית ---
 
-        /**
-         * טוען היסטוריה מ-localStorage.
-         * **מעודכן: נטרול שמירה מקומית לפי בקשת המשתמש.**
-         */
         function loadHistoryFromLocalStorage() {
             // נטרול: תמיד מתחילים עם היסטוריה ריקה, ללא טעינה.
             chatHistory = []; 
         }
 
-        /**
-         * שומר היסטוריה ל-localStorage.
-         * **מעודכן: נטרול שמירה מקומית לפי בקשת המשתמש.**
-         */
         function saveHistoryToLocalStorage() {
             // נטרול: לא שומרים כלום ל-localStorage.
             return;
@@ -313,6 +306,12 @@
             const lines = fullText.split('\n');
 
             for (const line of lines) {
+                // בדיקה אם יש כבר תוכן ואם צריך להוסיף שבירת שורה לפני השורה הבאה
+                if (element.childNodes.length > 0) {
+                    element.appendChild(document.createElement('br'));
+                }
+
+                // יצירת צומת טקסט חדש כדי לטפל בטקסט הרציף
                 const currentTextNode = document.createTextNode('');
                 element.appendChild(currentTextNode);
 
@@ -320,9 +319,6 @@
                     currentTextNode.nodeValue += line.charAt(i);
                     await new Promise(resolve => setTimeout(resolve, delay));
                     chatArea.scrollTop = chatArea.scrollHeight; 
-                }
-                if (line !== lines[lines.length - 1]) {
-                    element.appendChild(document.createElement('br'));
                 }
             }
 
@@ -353,13 +349,12 @@
             if (isError) {
                 bubble.className = `max-w-3xl shadow-md p-4 rounded-xl ${errorClass} transition-all duration-300`;
             } else {
-                bubble.className = `max-w-3xl shadow-md transition-all duration-300 ${role === 'model' ? 'darwin-bubble' : 'user-bubble p-4 rounded-xl'}`;
+                bubble.className = `max-w-3xl shadow-md transition-all duration-300 ${role === 'model' ? 'darwin-bubble' : 'user-bubble'}`;
             }
 
             const contentWrapper = document.createElement('div');
             contentWrapper.className = 'flex flex-col max-w-3xl';
-            contentWrapper.appendChild(bubble);
-
+            
             if (role === 'model' || isError) {
                 const avatarTemplate = document.getElementById('darwin-avatar-template');
                 const avatar = avatarTemplate ? avatarTemplate.cloneNode(true) : document.createElement('div');
@@ -369,11 +364,21 @@
                     avatar.removeAttribute('id'); 
                 }
                 messageContainer.appendChild(avatar);
-            
+                
                 if (useTypingEffect && !isError) {
+                    // אם משתמשים באפקט הקלדה, הטקסט מוגדר על ידי הפונקציה
+                    // Note: This relies on bubble being appended to the DOM before calling typeTextEffect for scrolling to work.
+                    // We append it now and then let the text fill up.
+                    contentWrapper.prepend(bubble); 
+                    messageContainer.appendChild(contentWrapper);
+                    chatArea.appendChild(messageContainer);
                     typeTextEffect(bubble, text);
                 } else {
+                    // אחרת, הטקסט מוגדר באופן מיידי
                     bubble.innerHTML = text.replace(/\n/g, '<br>');
+                    contentWrapper.prepend(bubble); 
+                    messageContainer.appendChild(contentWrapper);
+                    chatArea.appendChild(messageContainer);
                 }
 
                 if (sources.length > 0 && !isError) {
@@ -391,11 +396,12 @@
                 }
 
             } else {
+                // הודעת משתמש מוצגת תמיד מיד וללא אפקטים
                 bubble.innerHTML = text.replace(/\n/g, '<br>');
+                contentWrapper.prepend(bubble);
+                messageContainer.appendChild(contentWrapper);
+                chatArea.appendChild(messageContainer);
             }
-
-            messageContainer.appendChild(contentWrapper);
-            chatArea.appendChild(messageContainer);
             chatArea.scrollTop = chatArea.scrollHeight;
         }
 
@@ -410,8 +416,10 @@
                     role: 'model',
                     parts: [{ text: "אהלן וברוכים הבאים! 👋\nתראו, כשהייתי צעיר וסקרן על ספינת 'הביגל', לא חלמתי על כל הידע הזה. אני כאן כדי לחלוק אתכם את פלאי עולם הטבע, משולבים בתגליות הגנטיקה המודרניות. 🧬\n\nשאלו אותי כל שאלה שיש לכם על הברירה הטבעית, התאמה, או אפילו על הפינצ'ים הנהדרים של גלאפגוס! 🐦 אני כבר מצפה לגלות מה מעניין אתכם! 🧐" }],
                 };
+                // ב-initialize, הוסף את הודעת הפתיחה עם אפקט הקלדה
                 addMessage(welcomeMessage, true); 
             } else {
+                // אם יש היסטוריה, רנדר הכל מיידית (false)
                 chatHistory.forEach(msg => addMessage(msg, false)); 
             }
         }
@@ -447,10 +455,8 @@
             event.preventDefault();
             const userQuery = userInput.value.trim();
 
-            // אם ה-API לא מוכן (מפתח חסר), מונעים שליחה
             if (!userQuery || !isAPIReady) {
                  if (!isAPIReady) {
-                    // הוספת הודעת שגיאה מודגשת למשתמש
                     const errorMsgObj = { 
                         role: "model", 
                         parts: [{ text: "❌ אין לי מפתח API! הוסף את המפתח שלך לקוד (משתנה USER_API_KEY) כדי שאוכל להתחבר לגוגל." }], 
@@ -458,8 +464,7 @@
                         timestamp: new Date().getTime() 
                     };
                     chatHistory.push(errorMsgObj);
-                    // עדכון: אין צורך לשמור את ההיסטוריה המקומית
-                    renderChatHistory();
+                    addMessage(errorMsgObj, false);
                  }
                  return;
             }
@@ -467,19 +472,16 @@
             // 1. הוספת הודעת המשתמש לזיכרון המקומי
             const userMessage = { role: "user", parts: [{ text: userQuery }], timestamp: new Date().getTime() };
             chatHistory.push(userMessage); 
+            addMessage(userMessage, false); // רנדור הודעת משתמש מיידית
             
-            // 2. שמירת היסטוריה מקומית (לאחר הוספת הודעת המשתמש) - נטרלנו את השמירה בפועל
-            saveHistoryToLocalStorage();
-            renderChatHistory();
-            
-            // 3. נעילת UI והצגת טעינה
+            // 2. נעילת UI והצגת טעינה
             userInput.value = '';
             userInput.disabled = true;
             sendButton.disabled = true;
             loadingIndicator.classList.remove('hidden'); 
             
             
-            // 4. המשך לוגיקת API רגילה
+            // 3. המשך לוגיקת API רגילה
             const apiHistory = chatHistory.map(msg => ({ 
                 role: msg.role === 'model' ? 'model' : 'user', 
                 parts: msg.parts 
@@ -494,6 +496,7 @@
             };
 
             let result;
+            let darwinMessage;
             try {
                 const response = await fetchWithRetry(apiUrl, {
                     method: 'POST',
@@ -505,7 +508,7 @@
                 
                 const candidate = result.candidates?.[0];
                 const text = candidate?.content?.parts?.[0]?.text;
-                let darwinMessage;
+                
 
                 if (text) {
                     // 4א. הצלחה: בניית הודעת דרווין
@@ -533,13 +536,18 @@
                         errorMessage = `תקלת API: ${result.error.message}. נסה לרענן ולשאול שוב.`;
                     }
                     
+                    if (candidate && candidate.finishReason === 'MALFORMED_FUNCTION_CALL') {
+                        errorMessage = `אבוי, יש לי כשל פנימי קריטי בשימוש בכלי החיפוש! (MALFORMED_FUNCTION_CALL). זה מעיד על בעיה בהגדרת ה-API. ודא כי המפתח ריק כפי שהוגדר.`;
+                    }
+                    
                     darwinMessage = { role: "model", parts: [{ text: errorMessage }], type: 'error', timestamp: new Date().getTime() };
                     console.error("API Response Lacked Content or Failed:", JSON.stringify(result, null, 2)); 
                 }
 
-                // 4ג. עדכון היסטוריית הצ'אט ושמירה ל-localStorage - נטרלנו את השמירה בפועל
+                // 4ג. עדכון היסטוריית הצ'אט
                 chatHistory.push(darwinMessage);
                 saveHistoryToLocalStorage();
+                addMessage(darwinMessage, true); // רנדור הודעת מודל עם אפקט הקלדה
                 
             } catch (error) {
                 // 4ד. טיפול בשגיאת API קריטית (Network)
@@ -548,6 +556,7 @@
                 const errorMsgObj = { role: "model", parts: [{ text: errorMessage }], type: 'error', timestamp: new Date().getTime() };
                 chatHistory.push(errorMsgObj);
                 saveHistoryToLocalStorage();
+                addMessage(errorMsgObj, false); // רנדור שגיאה מיידית
                 
                 console.error("Critical Error during sendMessage:", error);
             } finally {
@@ -556,13 +565,6 @@
                 userInput.disabled = false;
                 sendButton.disabled = false;
                 userInput.focus();
-                
-                renderChatHistory(); // ודא רנדור אחרון של ההיסטוריה
-                // נקה את היסטוריית הצ'אט המקומית מיד לאחר הצגת התשובה 
-                // כדי להבטיח שבפעם הבאה שתרענן, לא תישמר היסטוריה (למרות שה-save/load כבויים, זה ליתר ביטחון).
-                // שים לב: זה מנקה רק את ההיסטוריה המקומית, לא את ההיסטוריה בזמן השיחה הנוכחית.
-                // אם אתה רוצה שהשיחה תתחיל מחדש *אחרי כל שאלה*, תצטרך לאפס את chatHistory = [] כאן.
-                // אני משאיר את זה כך, רק נטרול של השמירה בין ריענונים.
             }
         }
 
@@ -575,18 +577,7 @@
 
             // בדיקת מפתח API
             if (USER_API_KEY.trim() === "") {
-                isAPIReady = false;
-                userInput.disabled = true;
-                sendButton.disabled = true;
-                
-                statusMessage.className = "mt-2 text-sm text-yellow-800 text-center font-bold bg-yellow-100 p-1 rounded";
-                statusMessage.innerHTML = `
-                    ⚠️ דרווין נדרש למפתח API! ⚠️
-                    עליך לערוך את הקובץ ולהדביק את מפתח Gemini API שלך במקום המיועד
-                    (המשתנה <code>USER_API_KEY</code>) כדי לאפשר חיבור לאינטרנט.
-                `;
-            } else {
-                isAPIReady = true;
+                isAPIReady = true; 
                 apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${USER_API_KEY}`;
                 userInput.disabled = false;
                 sendButton.disabled = false;
@@ -594,6 +585,18 @@
                 
                 statusMessage.className = "mt-2 text-sm text-green-700 text-center font-bold";
                 statusMessage.textContent = "✅ מחובר למודל Gemini וחיפוש גוגל. מוכן לצאת לדרך! ⛵";
+
+            } else {
+                isAPIReady = false;
+                userInput.disabled = true;
+                sendButton.disabled = true;
+                
+                statusMessage.className = "mt-2 text-sm text-yellow-800 text-center font-bold bg-yellow-100 p-1 rounded";
+                statusMessage.innerHTML = `
+                    ⚠️ אזהרה: מפתח API לא ריק ⚠️
+                    ודא שהמפתח שהוזן תקין, או השאר את המשתנה <code>USER_API_KEY</code> ריק
+                    כדי לאפשר לסביבה להשתמש במפתח האוטומטי.
+                `;
             }
         }
 
