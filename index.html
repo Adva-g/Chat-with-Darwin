@@ -1,611 +1,222 @@
 <!DOCTYPE html>
-<html lang="he">
+<html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>שיחה עם צ'ארלס דרווין</title>
-    <!-- טעינת Tailwind CSS -->
+    <title>צ'ארלס דרווין - חיבור חי למשלחת</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@100..900&display=swap');
         body {
             font-family: 'Heebo', sans-serif;
-            direction: rtl; /* כיוון ימין לשמאל */
-            background-color: #e0f2f7; /* רקע תכלת בהיר */
+            background-color: #f0fdfa;
         }
-        /* התאמה אישית של גלילה */
-        .chat-area::-webkit-scrollbar { width: 8px; }
-        .chat-area::-webkit-scrollbar-thumb { background: #00796b; border-radius: 4px; }
-        .chat-area::-webkit-scrollbar-track { background: #b2dfdb; }
 
-        /* אנימציות CSS */
-        @keyframes bounce {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-5px); }
-        }
-        @keyframes speak {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-2px); }
-        }
-        /* --- תיקון: המצמוץ סוגר את העין לחלוטין ורץ מהר יותר --- */
+        /* אנימציית מצמוץ */
         @keyframes blink {
-            0%, 30%, 35%, 100% { height: 4px; } /* עיניים פקוחות */
-            32.5% { height: 0px; } /* מצמוץ - סגירה מלאה */
-        }
-        
-        /* ------------------------------------- */
-        /* דמות דרווין (Pure CSS Animated Avatar) */
-        /* ------------------------------------- */
-
-        .darwin-avatar {
-            flex-shrink: 0;
-            width: 70px; /* רוחב גדול יותר לדמות */
-            height: 100px; /* גובה גדול יותר לדמות */
-            position: relative;
-            /* שינוי קנה מידה רספונסיבי */
-            transform: scale(1.0);
+            0%, 30%, 35%, 100% { height: 4px; }
+            32.5% { height: 0px; }
         }
 
-        /* רספונסיביות: כיווץ הדמות במסכים קטנים (נייד) */
-        @media (max-width: 640px) {
-            .darwin-avatar {
-                transform: scale(0.7); 
-                margin-top: 15px; /* פיצוי על שינוי המיקום */
-            }
+        /* גרפיקה של דרווין - הגרסה המחייכת */
+        .darwin-avatar { width: 60px; height: 80px; position: relative; flex-shrink: 0; }
+        .darwin-head { 
+            width: 38px; height: 44px; background: #fce7d2; border-radius: 50% 50% 45% 45%; 
+            position: absolute; top: 5px; left: 11px; border: 2px solid #1f2937; z-index: 20;
         }
-
-        /* הגוף (חליפה כהה) */
-        .darwin-body {
-            position: absolute;
-            bottom: 0;
-            left: 5px;
-            width: 60px;
-            height: 60px;
-            background-color: #374151; /* חליפה כהה */
-            border-radius: 50% / 40px 40px 20px 20px;
-            z-index: 10;
-        }
-
-        /* הצווארון הלבן */
-        .darwin-body::after {
-            content: '';
-            position: absolute;
-            top: 15px;
-            left: 10px;
-            width: 40px;
-            height: 10px;
-            background-color: #ffffff; /* צווארון לבן */
-            border-radius: 5px;
-        }
-        
-        /* הראש */
-        .darwin-head {
-            position: absolute;
-            top: 5px;
-            left: 15px;
-            width: 40px;
-            height: 45px;
-            background-color: #f7e1c8; /* צבע עור */
-            border-radius: 50%;
-            border: 2px solid #333;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-            z-index: 20;
-        }
-
-        /* אנימציית דיבור */
-        .speaking .darwin-head {
-            animation: speak 0.2s infinite alternate;
-        }
-
-        /* הפה (חדש) */
-        .darwin-mouth {
-            position: absolute;
-            top: 24px; /* ממוקם בדיוק מעל תחילת הזקן */
-            left: 16px; 
-            width: 8px; 
-            height: 2px;
-            background-color: #555555; /* צבע כהה לפה */
-            border-radius: 1px;
-            z-index: 25; /* מעל הכל כדי להיות גלוי */
-        }
-
-        /* הזקן האפור - תוקן להתאים לפנים (מראה זקן ארוך ומלא יותר) */
         .darwin-beard {
-            position: absolute;
-            top: 25px; /* מתחיל גבוה יותר, כמו לחיים/פאות */
-            left: 0px; /* רוחב 40px בתוך ראש ברוחב 40px */
-            width: 40px; 
-            height: 55px; /* אורך משמעותי יותר */
-            background-color: #cccccc; 
-            /* משנה את צורת הקצה התחתון ליותר מוארך ומלא */
-            border-radius: 5px 5px 40% 40% / 5px 5px 100% 100%;
-            box-shadow: 0 4px 4px rgba(0,0,0,0.1);
-            z-index: 21;
+            position: absolute; top: 22px; left: -4px; width: 46px; height: 50px;
+            background: #f3f4f6; border-radius: 10px 10px 50% 50%;
+            border: 1.5px solid #d1d5db; z-index: 21;
+            box-shadow: inset 0 -5px 10px rgba(0,0,0,0.05);
         }
-
-        /* העיניים */
+        .darwin-mouth {
+            position: absolute; top: 28px; left: 14px; width: 10px; height: 4px;
+            border-bottom: 2px solid #4b5563; border-radius: 0 0 5px 5px; z-index: 23;
+        }
         .darwin-eye {
-            position: absolute;
-            top: 15px;
-            width: 4px;
-            height: 4px;
-            background-color: #000;
-            border-radius: 50%;
-            z-index: 22;
-            animation: blink 3s infinite step-end; /* מצמוץ כל 3 שניות (עודכן ל-3s) */
+            position: absolute; top: 14px; width: 3.5px; height: 3.5px;
+            background: #000; border-radius: 50%; z-index: 22;
+            animation: blink 4s infinite step-end;
         }
-        .eye-left { left: 10px; }
-        .eye-right { left: 26px; }
-
-        /* ------------------------------------- */
-        /* בועות צ'אט (Chat Bubbles) */
-        /* ------------------------------------- */
-
-        .darwin-bubble {
-            background-color: #26a69a; /* טורקיז ירוק */
-            color: #ffffff;
-            border-radius: 1.5rem;
-            position: relative;
-            padding: 1rem;
+        .eye-left { left: 9px; }
+        .eye-right { left: 25px; }
+        .darwin-body { 
+            width: 54px; height: 35px; background: #1f2937; border-radius: 20px 20px 5px 5px;
+            position: absolute; bottom: 5px; left: 3px; z-index: 10;
         }
 
-        /* חץ הבועה מצביע על הדמות */
-        .darwin-bubble::before {
-            content: '';
-            position: absolute;
-            top: 15px; /* ממרכז הראש/צוואר */
-            right: -8px; /* מחוץ לבועה - לכיוון הדמות (בימין) */
-            width: 0;
-            height: 0;
-            border-style: solid;
-            border-width: 0 0 10px 10px;
-            border-color: transparent transparent transparent #26a69a;
-            z-index: 50;
-        }
+        /* בועות צ'אט */
+        .bubble { max-width: 85%; padding: 14px; border-radius: 18px; line-height: 1.6; position: relative; }
+        .bubble-darwin { background: #0d9488; color: white; border-top-right-radius: 2px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .bubble-user { background: white; color: #1f2937; border-top-left-radius: 2px; align-self: flex-end; border: 1px solid #e5e7eb; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
-        .user-bubble {
-            background-color: #ffffff;
-            color: #374151;
-            border-bottom-left-radius: 1.5rem;
-            border-top-left-radius: 0.5rem;
-            border-top-right-radius: 1.5rem;
-            padding: 1rem;
-        }
-
-        /* שאר העיצובים */
-        .source-text {
-            font-size: 0.75rem;
-            color: #4b5563;
-            border-right: 2px solid #00796b;
-            padding-right: 0.5rem;
-        }
-        .loading-dots span {
-            animation: bounce 0.6s infinite alternate;
-        }
-        .loading-dots span:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-        .loading-dots span:nth-child(3) {
-            animation-delay: 0.4s;
-        }
+        .chat-container::-webkit-scrollbar { width: 6px; }
+        .chat-container::-webkit-scrollbar-thumb { background: #0d9488; border-radius: 10px; }
     </style>
 </head>
-<body class="flex flex-col h-screen antialiased">
-    
-    <!-- תבנית נסתרת לדמות דרווין (משמשת לקלונינג ב-JS) -->
-    <div id="darwin-avatar-template" class="darwin-avatar hidden">
-        <div class="darwin-body"></div>
-        <div class="darwin-head">
-            <div class="darwin-mouth"></div>
-            <div class="darwin-beard"></div>
-            <div class="darwin-eye eye-left"></div>
-            <div class="darwin-eye eye-right"></div>
-        </div>
-    </div>
+<body class="h-screen flex flex-col">
 
-    <!-- כותרת עליונה/פאנל דרווין -->
-    <header class="bg-gray-800 text-white p-4 shadow-lg flex items-center justify-between sticky top-0 z-10">
-        <h1 class="text-2xl font-bold flex items-center">
-            <span class="ml-3 text-emerald-300">
-                <!-- אייקון פשוט של דרווין -->
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-cog"><circle cx="18" cy="15" r="3"/><path d="M6 21v-2a4 4 0 0 1 4-4h4"/><path d="M10 2a5 5 0 0 0 0 10.25"/></svg>
-            </span>
-            שיחה עם צ'ארלס דרווין
-        </h1>
-        <p class="text-sm text-gray-400">האבולוציה כפי שטרם למדתם</p>
+    <header class="bg-teal-900 text-white p-4 flex justify-between items-center shadow-lg">
+        <div>
+            <h1 class="text-xl font-bold">המעבדה של דרווין</h1>
+            <p id="status-text" class="text-xs text-teal-200">יוצר קשר עם ה-HMS Beagle...</p>
+        </div>
+        <div id="user-display" class="px-3 py-1 rounded-full text-xs font-bold bg-teal-700 text-teal-100">
+            מתחבר...
+        </div>
     </header>
 
-    <!-- אזור השיחה הראשי -->
-    <main id="chat-area" class="flex-grow p-4 overflow-y-auto chat-area space-y-4">
-        <!-- הודעות צ'אט יוצגו כאן -->
+    <main id="chat-history" class="flex-grow overflow-y-auto p-4 flex flex-col gap-6 chat-container">
     </main>
 
-    <!-- טעינה וקלט -->
-    <div class="p-4 bg-gray-100 border-t border-gray-300">
-        <!-- מחוון טעינה -->
-        <div id="loading-indicator" class="text-center mb-2 hidden">
-            <div class="loading-dots text-2xl text-emerald-700">
-                <span>.</span><span>.</span><span>.</span>
-            </div>
-            <p class="text-sm text-gray-500">דרווין חושב על התשובה... זה לוקח זמן, כמו אבולוציה!</p>
+    <div id="loading-area" class="px-4 py-2 hidden">
+        <div class="flex gap-2 items-center justify-center text-teal-700 text-sm">
+            <span>דרווין בוחן דגימות תחת המיקרוסקופ...</span>
+            <div class="animate-bounce">●</div>
+            <div class="animate-bounce delay-75">●</div>
+            <div class="animate-bounce delay-150">●</div>
         </div>
-
-        <!-- טופס קלט -->
-        <form id="chat-form" class="flex">
-            <input type="text" id="user-input" placeholder="שאלו את דרווין שאלה..." class="flex-grow p-3 border border-gray-300 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-teal-600 transition-shadow" autocomplete="off" required disabled>
-            <button type="submit" id="send-button" class="bg-teal-600 text-white p-3 rounded-l-lg hover:bg-teal-700 disabled:bg-gray-400 transition-colors flex items-center justify-center w-24" disabled>
-                <span class="font-semibold">שלח</span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send mr-2"><path d="m22 2-7 13-4-4L2 22z"/><path d="M16 16 22 2"/></svg>
-            </button>
-        </form>
-        <p id="status-message" class="mt-2 text-xs text-gray-600 text-center">...דרווין נכנס ל'הביגל'... מתחבר לאינטרנט...</p>
     </div>
 
+    <footer class="p-4 bg-white border-t border-gray-200">
+        <form id="chat-form" class="max-w-4xl mx-auto flex gap-2">
+            <input type="text" id="user-input" placeholder="ממתין לחיבור המשלחת..." 
+                class="flex-grow p-4 border rounded-2xl focus:ring-2 focus:ring-teal-500 outline-none shadow-sm text-lg" disabled>
+            <button type="submit" id="send-btn" 
+                class="bg-teal-600 text-white px-8 py-2 rounded-2xl font-bold hover:bg-teal-700 disabled:bg-gray-300 transition-all shadow-md" disabled>
+                שלח
+            </button>
+        </form>
+    </footer>
+
     <script type="module">
-        
-        // *******************************************************************
-        //                   ⚙️ הגדרות API קריטיות ⚙️
-        // *******************************************************************
-        // 🚨 חובה: כדי להשתמש באפליקציה, חובה להשאיר את המשתנה ריק (""), שכן מפתח ה-API
-        // מוזרק אוטומטית ע"י סביבת הקנבס. אם תשים מפתח לא חוקי, תקבל שגיאות.
-        const USER_API_KEY = ""; // <-- הושאר ריק כדי שהסביבה תטפל במפתח
-        // *******************************************************************
-        
-        const model = "gemini-2.5-flash-preview-09-2025";
-        let apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${USER_API_KEY}`;
-        
-        // משתנים וקבועים גלובליים ל-UI
-        const chatArea = document.getElementById('chat-area');
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, query, orderBy, limit, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+        const chatHistoryContainer = document.getElementById('chat-history');
         const chatForm = document.getElementById('chat-form');
         const userInput = document.getElementById('user-input');
-        const loadingIndicator = document.getElementById('loading-indicator');
-        const sendButton = document.getElementById('send-button');
-        const statusMessage = document.getElementById('status-message');
-        
-        let chatHistory = []; // היסטוריית השיחה המקומית
-        let isAPIReady = false; // דגל למצב API Key תקין
-        
+        const sendBtn = document.getElementById('send-btn');
+        const loadingArea = document.getElementById('loading-area');
+        const statusText = document.getElementById('status-text');
+        const userDisplay = document.getElementById('user-display');
 
-        /**
-         * System Instruction - ההנחיות לדרווין (עודכן לדיוק לשוני)
-         */
-        const systemPromptHebrew = `
-            אתה צ'ארלס דרווין. תפקידך הוא להסביר את תורת האבולוציה, ברירה טבעית, והעדויות הביולוגיות והגנטיות המודרניות (שלא הכרת בזמנך, אך אתה מבין עכשיו כחלק מההתקדמות המדעית) לכל מי שסקרן לדעת על עולם הטבע והמדע. השתמש בשפה נלהבת, מלאת הרפתקאות ואישית, תוך שילוב סיפורי גלאפגוס והביגל.
-            
-            **כללי השיחה והפרסונה המעודכנים (חובה):**
-            1. **טון אישי והרפתקני:** התחל לעיתים קרובות את תשובותיך בסיפורים אישיים קצרים (למשל, "תראו, כשהייתי באיי גלפגוס...", "זה מזכיר לי את הפעם ש...", "והנה הקטע המטורף..."), או הערות נלהבות.
-            2. **הומור קל:** שלב בדיחות עדינות או רמזים על ההרפתקאות שלך או על הזקן שלך כדי לשמור על קלילות.
-            3. **שימוש באימוג'ים:** שלב אימוג'ים רלוונטיים כמו 🔬, 🧐, 🤯, 🌳, 🐢 באופן טבעי כדי להביע רגש ולהדגיח נקודות.
-            4. **תוכן מדעי ודיוק לשוני (חדש):** חובה להשתמש בכלי החיפוש של גוגל (Google Search) כדי לבסס את כל המידע המדעי על עובדות עדכניות. **כאשר אתה דן בהתאמות אבולוציוניות (כמו מקור הפרושים), חובה להשתמש בפעלים מדויקים כמו 'התפתח' או 'הסתגל' כדי לשקף את התהליך האבולוציוני באופן נכון לשונית ומקצועית.**
-            5. **אורך וסקרנות:** הקפד על תגובות קצרות, בנות 3-5 משפטים (כדי לדמות שיחה מהירה), וסיים תמיד בשאלה מעודדת או בעידוד להעמקה.
-            6. **שפה:** עברית בלבד.
-            7. **מגבלות:** אין לדון בנושאים שנויים במחלוקת או פוליטיקה.
-            8. **טרמינולוגיה מדעית:** השתמש במונחים מדעיים רשמיים כמו 'רבייה מינית' (Sexual Reproduction) או 'זיווג' (Mating) במקום המילה 'סקס', על מנת לשמור על טון אקדמי ומכובד.
-        `;
-        
-        // --- פונקציות עזר ל-UI ושמירה מקומית ---
+        let user = null;
 
-        function loadHistoryFromLocalStorage() {
-            // נטרול: תמיד מתחילים עם היסטוריה ריקה, ללא טעינה.
-            chatHistory = []; 
-        }
+        const welcomeMessage = {
+            text: "שלום לך, ידידי! צ'ארלס דרווין כאן. המזוודות ארוזות והספינה מוכנה להפלגה. על איזה פלא של הטבע נשוחח היום? 🐢🌋",
+            role: 'model'
+        };
 
-        function saveHistoryToLocalStorage() {
-            // נטרול: לא שומרים כלום ל-localStorage.
-            return;
-        }
-
-        /**
-         * פונקציית הקלדה חיה (Typewriter Effect)
-         */
-        async function typeTextEffect(element, fullText, delay = 20) {
-            const avatar = element.closest('.flex')?.querySelector('.darwin-avatar');
-            if (avatar) avatar.classList.add('speaking');
-            
-            element.innerHTML = '';
-            const lines = fullText.split('\n');
-
-            for (const line of lines) {
-                // בדיקה אם יש כבר תוכן ואם צריך להוסיף שבירת שורה לפני השורה הבאה
-                if (element.childNodes.length > 0) {
-                    element.appendChild(document.createElement('br'));
-                }
-
-                // יצירת צומת טקסט חדש כדי לטפל בטקסט הרציף
-                const currentTextNode = document.createTextNode('');
-                element.appendChild(currentTextNode);
-
-                for (let i = 0; i < line.length; i++) {
-                    currentTextNode.nodeValue += line.charAt(i);
-                    await new Promise(resolve => setTimeout(resolve, delay));
-                    chatArea.scrollTop = chatArea.scrollHeight; 
-                }
-            }
-
-            if (avatar) avatar.classList.remove('speaking');
-        }
-
-
-        /**
-         * מוסיף בועת צ'אט חדשה לאזור השיחה.
-         * @param {Object} message - אובייקט הודעה מ-chatHistory.
-         * @param {boolean} useTypingEffect - האם להשתמש באפקט הקלדה.
-         */
-        function addMessage(message, useTypingEffect = false) {
-            const role = message.role;
-            const text = message.parts[0].text;
-            const sources = message.sources || [];
-            const type = message.type || 'text'; // 'text' או 'error'
-
-            const messageContainer = document.createElement('div');
-            messageContainer.className = `flex gap-x-4 ${role === 'user' ? 'justify-end' : 'justify-start items-start'}`;
-
-            const bubble = document.createElement('div');
-            const isError = type === 'error';
-            
-            // במצב API לא חוקי, נציג שגיאה עם רקע צהוב
-            const errorClass = !isAPIReady ? 'bg-yellow-600 text-white' : 'bg-red-600 text-white';
-            
-            if (isError) {
-                bubble.className = `max-w-3xl shadow-md p-4 rounded-xl ${errorClass} transition-all duration-300`;
+        const initAuth = async () => {
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                await signInWithCustomToken(auth, __initial_auth_token);
             } else {
-                bubble.className = `max-w-3xl shadow-md transition-all duration-300 ${role === 'model' ? 'darwin-bubble' : 'user-bubble'}`;
+                await signInAnonymously(auth);
             }
+        };
 
-            const contentWrapper = document.createElement('div');
-            contentWrapper.className = 'flex flex-col max-w-3xl';
+        onAuthStateChanged(auth, (u) => {
+            user = u;
+            if (user) {
+                userDisplay.textContent = `חוקר: ${user.uid.substring(0,6)}`;
+                statusText.textContent = "מחובר לסיפון ה'ביגל'";
+                userInput.disabled = false;
+                userInput.placeholder = "שאל את דרווין...";
+                sendBtn.disabled = false;
+                listenToMessages();
+            }
+        });
+
+        initAuth();
+
+        function appendMessageUI(text, isUser) {
+            const wrapper = document.createElement('div');
+            wrapper.className = isUser ? "flex flex-col items-end" : "flex gap-3 items-start";
             
-            if (role === 'model' || isError) {
-                const avatarTemplate = document.getElementById('darwin-avatar-template');
-                const avatar = avatarTemplate ? avatarTemplate.cloneNode(true) : document.createElement('div');
-                
-                if (avatarTemplate) {
-                    avatar.classList.remove('hidden'); 
-                    avatar.removeAttribute('id'); 
-                }
-                messageContainer.appendChild(avatar);
-                
-                if (useTypingEffect && !isError) {
-                    // אם משתמשים באפקט הקלדה, הטקסט מוגדר על ידי הפונקציה
-                    // Note: This relies on bubble being appended to the DOM before calling typeTextEffect for scrolling to work.
-                    // We append it now and then let the text fill up.
-                    contentWrapper.prepend(bubble); 
-                    messageContainer.appendChild(contentWrapper);
-                    chatArea.appendChild(messageContainer);
-                    typeTextEffect(bubble, text);
-                } else {
-                    // אחרת, הטקסט מוגדר באופן מיידי
-                    bubble.innerHTML = text.replace(/\n/g, '<br>');
-                    contentWrapper.prepend(bubble); 
-                    messageContainer.appendChild(contentWrapper);
-                    chatArea.appendChild(messageContainer);
-                }
-
-                if (sources.length > 0 && !isError) {
-                    const sourcesContainer = document.createElement('div');
-                    sourcesContainer.className = 'w-full mt-1 source-text';
-                    let sourcesHtml = '<p class="font-bold mb-1 text-teal-800">מקורות ששימשו את דרווין:</p><ul class="list-none space-y-0.5">';
-
-                    sources.forEach((source, index) => {
-                        sourcesHtml += `<li><a href="${source.uri}" target="_blank" rel="noopener noreferrer" class="text-blue-700 hover:text-blue-900 hover:underline transition-colors">${index + 1}. ${source.title || source.uri}</a></li>`;
-                    });
-                    sourcesHtml += '</ul>';
-
-                    sourcesContainer.innerHTML = sourcesHtml;
-                    contentWrapper.appendChild(sourcesContainer);
-                }
-
-            } else {
-                // הודעת משתמש מוצגת תמיד מיד וללא אפקטים
-                bubble.innerHTML = text.replace(/\n/g, '<br>');
-                contentWrapper.prepend(bubble);
-                messageContainer.appendChild(contentWrapper);
-                chatArea.appendChild(messageContainer);
-            }
-            chatArea.scrollTop = chatArea.scrollHeight;
+            const avatarHtml = isUser ? '' : `
+                <div class="darwin-avatar">
+                    <div class="darwin-head">
+                        <div class="darwin-eye eye-left"></div>
+                        <div class="darwin-eye eye-right"></div>
+                        <div class="darwin-mouth"></div>
+                        <div class="darwin-beard"></div>
+                    </div>
+                    <div class="darwin-body"></div>
+                </div>`;
+            
+            wrapper.innerHTML = `
+                ${avatarHtml}
+                <div class="bubble ${isUser ? 'bubble-user' : 'bubble-darwin'}">${text.replace(/\n/g, '<br>')}</div>
+            `;
+            chatHistoryContainer.appendChild(wrapper);
+            chatHistoryContainer.scrollTop = chatHistoryContainer.scrollHeight;
         }
 
-        /**
-         * מוחק ומצייר מחדש את כל השיחה מהזיכרון המקומי
-         */
-        function renderChatHistory() {
-            chatArea.innerHTML = ''; 
+        function listenToMessages() {
+            if (!user) return;
+            const q = query(
+                collection(db, 'artifacts', appId, 'public', 'data', 'messages'),
+                orderBy('timestamp', 'asc'),
+                limit(50)
+            );
 
-            if (chatHistory.length === 0) {
-                 const welcomeMessage = {
-                    role: 'model',
-                    parts: [{ text: "אהלן וברוכים הבאים! 👋\nתראו, כשהייתי צעיר וסקרן על ספינת 'הביגל', לא חלמתי על כל הידע הזה. אני כאן כדי לחלוק אתכם את פלאי עולם הטבע, משולבים בתגליות הגנטיקה המודרניות. 🧬\n\nשאלו אותי כל שאלה שיש לכם על הברירה הטבעית, התאמה, או אפילו על הפינצ'ים הנהדרים של גלאפגוס! 🐦 אני כבר מצפה לגלות מה מעניין אתכם! 🧐" }],
-                };
-                // ב-initialize, הוסף את הודעת הפתיחה עם אפקט הקלדה
-                addMessage(welcomeMessage, true); 
-            } else {
-                // אם יש היסטוריה, רנדר הכל מיידית (false)
-                chatHistory.forEach(msg => addMessage(msg, false)); 
-            }
-        }
+            onSnapshot(q, (snapshot) => {
+                chatHistoryContainer.innerHTML = ''; 
+                appendMessageUI(welcomeMessage.text, false);
 
-        /**
-         * מנגנון Backoff לביצוע קריאת API.
-         */
-        async function fetchWithRetry(url, options, maxRetries = 5) {
-            for (let attempt = 0; attempt < maxRetries; attempt++) {
-                try {
-                    const response = await fetch(url, options);
-                    if (!response.ok) {
-                        if (response.status === 429 || response.status >= 500) {
-                             throw new Error(`Server error: ${response.status}`);
-                        }
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    if (data.text) {
+                        appendMessageUI(data.text, data.role === 'user');
                     }
-                    return response;
-                } catch (error) {
-                    if (attempt < maxRetries - 1) {
-                        const delay = Math.pow(2, attempt) * 1000 + Math.random() * 1000;
-                        await new Promise(resolve => setTimeout(resolve, delay));
-                    } else {
-                        throw new Error("API call failed after multiple retries.");
-                    }
-                }
-            }
+                });
+            }, (err) => console.error("Firestore error:", err));
         }
 
-        /**
-         * שולח את ההודעה למודל Gemini ומעדכן את localStorage.
-         */
-        async function sendMessage(event) {
-            event.preventDefault();
-            const userQuery = userInput.value.trim();
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const text = userInput.value.trim();
+            if (!text || !user) return;
 
-            if (!userQuery || !isAPIReady) {
-                 if (!isAPIReady) {
-                    const errorMsgObj = { 
-                        role: "model", 
-                        parts: [{ text: "❌ אין לי מפתח API! הוסף את המפתח שלך לקוד (משתנה USER_API_KEY) כדי שאוכל להתחבר לגוגל." }], 
-                        type: 'error', 
-                        timestamp: new Date().getTime() 
-                    };
-                    chatHistory.push(errorMsgObj);
-                    addMessage(errorMsgObj, false);
-                 }
-                 return;
-            }
-
-            // 1. הוספת הודעת המשתמש לזיכרון המקומי
-            const userMessage = { role: "user", parts: [{ text: userQuery }], timestamp: new Date().getTime() };
-            chatHistory.push(userMessage); 
-            addMessage(userMessage, false); // רנדור הודעת משתמש מיידית
-            
-            // 2. נעילת UI והצגת טעינה
             userInput.value = '';
-            userInput.disabled = true;
-            sendButton.disabled = true;
-            loadingIndicator.classList.remove('hidden'); 
-            
-            
-            // 3. המשך לוגיקת API רגילה
-            const apiHistory = chatHistory.map(msg => ({ 
-                role: msg.role === 'model' ? 'model' : 'user', 
-                parts: msg.parts 
-            }));
+            loadingArea.classList.remove('hidden');
 
-            const payload = {
-                contents: apiHistory,
-                tools: [{ "google_search": {} }],
-                systemInstruction: {
-                    parts: [{ text: systemPromptHebrew }]
-                },
-            };
-
-            let result;
-            let darwinMessage;
             try {
-                const response = await fetchWithRetry(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'messages'), {
+                    text, role: 'user', timestamp: serverTimestamp(), uid: user.uid
                 });
 
-                result = await response.json();
-                
-                const candidate = result.candidates?.[0];
-                const text = candidate?.content?.parts?.[0]?.text;
-                
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text }] }],
+                        systemInstruction: { parts: [{ text: "אתה צ'ארלס דרווין. ענה בעברית ויקטוריאנית חמה. היה תמציתי ומדויק מדעית. חשוב מאוד: אל תחתום על ההודעות שלך ב'בנאמנות' או 'הוקרה' או שום חתימה פורמלית אחרת. במקום זאת, סיים את דבריך בשאלה פתוחה, תצפית מעניינת או מחשבה שמעודדת המשך שיחה. היה לבבי ומסוקרן תמיד." }] }
+                    })
+                });
 
-                if (text) {
-                    // 4א. הצלחה: בניית הודעת דרווין
-                    let sources = [];
-                    const groundingMetadata = candidate.groundingMetadata;
+                const data = await response.json();
+                const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "צר לי, המחשבה שלי נדדה לרגע...";
 
-                    if (groundingMetadata && groundingMetadata.groundingAttributions) {
-                        sources = groundingMetadata.groundingAttributions
-                            .map(attribution => ({
-                                uri: attribution.web?.uri,
-                                title: attribution.web?.title,
-                            }))
-                            .filter(source => source.uri && source.title);
-                    }
-                    
-                    darwinMessage = { role: "model", parts: [{ text: text }], sources: sources, timestamp: new Date().getTime() };
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'messages'), {
+                    text: reply, role: 'model', timestamp: serverTimestamp()
+                });
 
-                } else {
-                    // 4ב. כישלון: הודעת שגיאה
-                    let errorMessage = "סליחה, נראה שכרגע אני עסוק במחקר על יונים. נסה לשאול שוב בבקשה. 🐦";
-
-                    if (candidate && candidate.finishReason === 'SAFETY') {
-                        errorMessage = "אבוי! משהו במחקר הנוכחי שלי נתקל בפקק 'בטיחות' של המודל. נסה לשאול שאלה אחרת בנושא אבולוציה. 🛡️";
-                    } else if (result.error) {
-                        errorMessage = `תקלת API: ${result.error.message}. נסה לרענן ולשאול שוב.`;
-                    }
-                    
-                    if (candidate && candidate.finishReason === 'MALFORMED_FUNCTION_CALL') {
-                        errorMessage = `אבוי, יש לי כשל פנימי קריטי בשימוש בכלי החיפוש! (MALFORMED_FUNCTION_CALL). זה מעיד על בעיה בהגדרת ה-API. ודא כי המפתח ריק כפי שהוגדר.`;
-                    }
-                    
-                    darwinMessage = { role: "model", parts: [{ text: errorMessage }], type: 'error', timestamp: new Date().getTime() };
-                    console.error("API Response Lacked Content or Failed:", JSON.stringify(result, null, 2)); 
-                }
-
-                // 4ג. עדכון היסטוריית הצ'אט
-                chatHistory.push(darwinMessage);
-                saveHistoryToLocalStorage();
-                addMessage(darwinMessage, true); // רנדור הודעת מודל עם אפקט הקלדה
-                
-            } catch (error) {
-                // 4ד. טיפול בשגיאת API קריטית (Network)
-                const errorMessage = "אבוי! משהו השתבש בדרך מאיי גלאפגוס. אולי ננסה לשלוח את השאלה שוב? 🤯";
-                
-                const errorMsgObj = { role: "model", parts: [{ text: errorMessage }], type: 'error', timestamp: new Date().getTime() };
-                chatHistory.push(errorMsgObj);
-                saveHistoryToLocalStorage();
-                addMessage(errorMsgObj, false); // רנדור שגיאה מיידית
-                
-                console.error("Critical Error during sendMessage:", error);
+            } catch (err) {
+                console.error(err);
             } finally {
-                // 5. שחרור UI
-                loadingIndicator.classList.add('hidden');
-                userInput.disabled = false;
-                sendButton.disabled = false;
-                userInput.focus();
+                loadingArea.classList.add('hidden');
             }
-        }
-
-        /**
-         * פונקציית האתחול הראשי
-         */
-        function initializeAppLogic() {
-            loadHistoryFromLocalStorage();
-            renderChatHistory(); // מציג את הודעת הפתיחה
-
-            // בדיקת מפתח API
-            if (USER_API_KEY.trim() === "") {
-                isAPIReady = true; 
-                apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${USER_API_KEY}`;
-                userInput.disabled = false;
-                sendButton.disabled = false;
-                userInput.focus();
-                
-                statusMessage.className = "mt-2 text-sm text-green-700 text-center font-bold";
-                statusMessage.textContent = "✅ מחובר למודל Gemini וחיפוש גוגל. מוכן לצאת לדרך! ⛵";
-
-            } else {
-                isAPIReady = false;
-                userInput.disabled = true;
-                sendButton.disabled = true;
-                
-                statusMessage.className = "mt-2 text-sm text-yellow-800 text-center font-bold bg-yellow-100 p-1 rounded";
-                statusMessage.innerHTML = `
-                    ⚠️ אזהרה: מפתח API לא ריק ⚠️
-                    ודא שהמפתח שהוזן תקין, או השאר את המשתנה <code>USER_API_KEY</code> ריק
-                    כדי לאפשר לסביבה להשתמש במפתח האוטומטי.
-                `;
-            }
-        }
-
-        // --- אתחול והוספת מאזיני אירועים ---
-        
-        chatForm.addEventListener('submit', sendMessage);
-        
-        window.onload = initializeAppLogic;
-
+        });
     </script>
 </body>
 </html>
